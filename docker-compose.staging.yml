@@ -8,7 +8,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
     environment:
-      - SERVER_NAME=localhost
+      - SERVER_NAME=staging
     depends_on:
       - app
     networks:

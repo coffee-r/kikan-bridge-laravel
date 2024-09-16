@@ -24,7 +24,15 @@ COPY src/ .
 
 # Composerのインストール
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Composer install
 RUN composer install
+
+# 最適化
+RUN if [ "$ENVIRONMENT" = "production" -o "$ENVIRONMENT" = "staging" ]; then \
+    composer install --optimize-autoloader --no-dev \
+;fi
+
 
 # /var/www/storage ディレクトリとそのサブディレクトリの所有者を www-data に変更
 # www-data は、通常、PHP-FPM が実行されるユーザーであり、書き込み権限を与えるために設定
@@ -33,6 +41,10 @@ RUN chown -R www-data:www-data /var/www/html/storage
 # iniファイルをコンテナ内にコピー
 COPY opcache.ini /usr/local/etc/php/conf.d/xdebug.ini
 COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+
+RUN if [ "$ENVIRONMENT" != "local" ]; then \
+    rm /usr/local/etc/php/conf.d/xdebug.ini  \
+;fi
 
 # pmをstaticに設定
 RUN echo "pm = dynamic" >> /usr/local/etc/php-fpm.d/www.conf \
