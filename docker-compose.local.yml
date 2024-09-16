@@ -21,6 +21,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./src:/var/www/html
+      - storage-volumes:/var/www/html/storage/framework
+      - vendor-volumes:/var/www/html/vendor
     networks:
       - laravel-network
 
@@ -37,3 +39,7 @@ services:
 networks:
   laravel-network:
     driver: bridge
+
+volumes: 
+  storage-volumes:
+  vendor-volumes:
